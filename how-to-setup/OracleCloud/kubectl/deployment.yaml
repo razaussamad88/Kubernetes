@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  #name: my-app
+  name: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      #app: my-app
+      app: webapp
+  template:
+    metadata:
+      labels:
+        #app: my-app
+        app: webapp
+    spec:
+      containers:
+      #- name: my-app
+      - name: webapp
+        #image: <region-key>.ocir.io/<tenancy-namespace>/<repository>/<image-name>:<tag>
+        #image: <region-key>.ocir.io/<tenancy-namespace>/<image-name>:<tag>
+        image: ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: oci-registry-secret

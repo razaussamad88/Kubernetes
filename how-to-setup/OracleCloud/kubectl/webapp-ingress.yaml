@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  # - host: webapp.oracle-k8s-freetier-razaussamad88.com   # Set your domain name here
+  - host: oke-vcn-quick-free-k8s-cluster-5d1e70a43
+  # - host: 80.225.192.247  # The IP you're using for access
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: webapp-service
+            port:
+              number: 8080

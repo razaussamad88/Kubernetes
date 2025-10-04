@@ -1,0 +1,346 @@
+image
+Oracle Cloud Credentials
+	
+	Cloud Account Name/Tenant Name : razaussamad88
+
+	razaussamad@yahoo.com
+	Pakistan@1988pk
+	
+	docker login http://ap-mumbai-1.ocir.io
+	docker login ap-mumbai-1.ocir.io
+	
+	razaussamad@gmail.com
+	Karachi@1988pk
+	
+	Region Name				: ap-mumbai-1
+	Compartment ID 			: ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq
+	Cluster ID				: ocid1.cluster.oc1.ap-mumbai-1.aaaaaaaamwdl3stvl3fnmjxq77uxb5jx2d2d5glcyitlypdc4crpobq5owkq
+	Repository Namespace	: bms04rxljz1v
+	Tenancy OCID			: ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq
+	User OCID				: ocid1.user.oc1..aaaaaaaadpxhipv5j3ouudh7mnaeba2pz2p62kg2zhty7rct54pwvrqteqla
+	Username 				: razaussamad@gmail.com
+	Auth Token				: (lZf531CZ<mue7[G+Dj>
+	
+	
+	Kubernetes API public endpoint : 80.225.215.162:6443
+	
+========================================================================================================================	
+
+# Login to OCIR
+
+	docker login ap-mumbai-1.ocir.io
+		username (repo namespace/username)	:	bms04rxljz1v/razaussamad@gmail.com
+		password (auth token)				:	(lZf531CZ<mue7[G+Dj>
+	
+	repo
+		ocid1.containerrepo.oc1.ap-mumbai-1.0.bms04rxljz1v.aaaaaaaa2zu4j77wmeu7io6p3iaani2sw6eqnuvxq3r5fynzwsnfksuq7qdq
+
+========================================================================================================================	
+	
+# Tag your image
+
+	to create a new image file from dockerfile;
+	navigate to project's dockerfile root directory on localmachine and execute below command,
+	e.g.	
+		cd E:\my_github_repos\Kubernetes\src\LoadBalancedApp\
+		docker build -t <new-image-name> -f <path-to-dockerfile> <build-context-directory>
+		
+		docker build -t webapp -f ./WebApp/Dockerfile .
+
+	OR, for build image for supported ARM/Linux,
+	
+	docker buildx build --platform linux/arm64 -t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest .
+	docker push ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+	
+	docker buildx build --platform linux/arm64 -t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest --push .
+	
+	e.g.
+		docker buildx build -f <path-to-dockerfile> --platform linux/arm64 -t <region-name>.ocir.io/<namespace-name>/<image-name>:<version-label> --push <build-context-directory>
+	
+		docker buildx build -f ./WebApp/Dockerfile --platform linux/arm64 -t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest --push .
+		docker buildx build -f ./WebApp/Dockerfile --no-cache --platform linux/arm64 -t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:v1.1 --push .
+
+	here,	
+		"-t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest" -->
+			->	ap-mumbai-1.ocir.io 	is your Docker registry (OCIR in your case).
+			->	bms04rxljz1v/webapp 	is the repository name.
+			->	latest 					is a version label. (you can use any tag you prefer, like v1.0 or stable).
+	
+	to re-tag your existing image, (if needed)
+		docker tag <source-image> <target-image>
+		docker tag ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:v1.0
+	
+	
+	to check the new image,
+		docker images
+		
+	docker tag webapp ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+
+	no output for tag means success; to check the new tagged image,
+		docker images
+		
+========================================================================================================================
+
+# Push your image
+
+	docker push ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+	docker push ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:v1.0
+	
+Note : "Layer Already Exist" or "Already Exist" is not an error message but only information. Your services are deployed.
+	
+========================================================================================================================
+
+# Login to OCIR
+	docker login ap-mumbai-1.ocir.io
+
+# Tag your image
+	docker tag my-app ap-mumbai-1.ocir.io/bms04rxljz1v/my-app:latest
+
+# Push your image
+	docker push ap-mumbai-1.ocir.io/bms04rxljz1v/my-app:latest
+
+========================================================================================================================
+
+Configure kubectl for your Cluster:
+
+	oci setup config
+	
+then paste the public key in cloud, under user API KEY.
+	
+	oci iam user list
+
+
+
+After the cluster is created, download the kubeconfig file to configure kubectl
+e.g.	
+	oci ce cluster create-kubeconfig --cluster-id <cluster-id> --file $HOME/.kube/config --region <region>
+
+execute below cmd from powershell,
+
+	oci ce cluster create-kubeconfig --cluster-id "ocid1.cluster.oc1.ap-mumbai-1.aaaaaaaamwdl3stvl3fnmjxq77uxb5jx2d2d5glcyitlypdc4crpobq5owkq" --file "C:\Users\Raza us Samad\.kube\config" --region "ap-mumbai-1" --overwrite
+
+
+$HOME
+	C:\Users\Raza us Samad\.oci
+	C:\Users\Raza us Samad\.kube
+
+
+Verify that kubectl is configured:
+
+	set KUBECONFIG="C:\Users\Raza us Samad\.kube\config"
+
+	kubectl get nodes
+OR
+	kubectl --kubeconfig="C:\Users\Raza us Samad\.kube\config" get nodes
+
+
+========================================================================================================================
+
+Create a file called deployment.yaml, using sample file.
+
+Apply the deployment with kubectl:
+
+	kubectl apply -f deployment.yaml
+	kubectl apply -f webapp-service.yaml
+OR
+	
+	kubectl apply -f "E:\my_github_repos\Kubernetes\how-to-setup\OracleCloud\kubectl\deployment.yaml"
+
+Now your deployment has been created in Kubernetes cluster.
+
+========================================================================================================================
+
+Create a file called webapp-service.yaml, for node porting.
+
+Apply the nodePort with kubectl:
+
+	kubectl apply -f webapp-service.yaml
+
+to check Node IP,
+	kubectl get nodes -o wide
+	
+to check NodePort service,
+	kubectl get svc
+	kubectl get svc -n ingress-nginx
+
+
+========================================================================================================================
+
+To summarize, here’s a quick list of commands you might use after applying your deployment:
+
+1. Check the deployment status:
+		kubectl get deployments
+		kubectl describe deployment webapp
+
+2. Get Pods related to the deployment:
+		kubectl get pods
+
+3. View the status of a specific Pod:
+		kubectl describe pod <pod-name>
+
+4. Check service status (if applicable):
+		kubectl get services
+
+5. Port-forward if needed:
+		kubectl port-forward pod/<pod-name> 8080:80
+
+6. Check logs (if necessary):
+		kubectl logs <pod-name>
+		kubectl logs <pod-name> -c <container-name>
+
+If you want to scale your deployment up or down, you can do so easily with:
+		kubectl scale deployment webapp --replicas=<desired-replica-count>
+
+To restart the Pods in a Deployment, use:
+	kubectl rollout restart deployment webapp
+
+To remove a pod or deployment
+	kubectl delete deployment <deployment-name>
+	kubectl delete pod <pod-name>
+
+
+
+========================================================================================================================
+
+Create the Image Pull Secret:
+--------------------------------
+First, you need to authenticate against the OCI registry and create a Kubernetes secret. Here are the steps:
+
+Step 1: Login to OCI Registry (via CLI)
+Once the CLI is configured, use the following command to login to OCI registry:
+	oci --profile <profile-name> os object storage login
+	oci --profile razaprofile os object storage login
+
+	oci -n <tenancy-namespace> iam auth-token create --profile <your-profile>
+	oci -n bms04rxljz1v iam (lZf531CZ<mue7[G+Dj> create --profile razaprofile
+	oci -n bms04rxljz1v iam auth-token create --profile razaprofile
+
+
+This login generates an authentication token, which is used to create the Kubernetes secret.
+
+Step 2: Create the Image Pull Secret
+To create a Kubernetes secret for pulling images from OCI, use the kubectl create secret docker-registry command. The credentials are obtained via the Oracle Cloud Infrastructure CLI.
+	kubectl create secret docker-registry oci-registry-secret \
+	  --docker-server=ap-mumbai-1.ocir.io \
+	  --docker-username='<tenancy-namespace>/<user-namespace>' \
+	  --docker-password='<oci-auth-token>' \
+	  --docker-email='<your-email@example.com>'
+	  
+	  
+	kubectl create secret docker-registry oci-registry-secret --docker-server=ap-mumbai-1.ocir.io  --docker-username='bms04rxljz1v/razaussamad@gmail.com' --docker-password='(lZf531CZ<mue7[G+Dj>' --docker-email='razaussamad@gmail.com'
+	
+Now, secret/oci-registry-secret created. Use it in new deployment.yaml, and re-deploy the update yaml with secret.
+
+
+to check,
+	kubectl get secrets
+	kubectl get secret oci-registry-secret
+	
+	
+docker buildx build --platform linux/arm64 -t ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest .
+docker push ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+
+
+========================================================================================================================
+
+
+	
+sysdm.cpl
+
+========================================================================================================================
+
+
+install Kubectl from here
+	https://kubernetes.io/releases/download/#binaries
+
+
+========================================================================================================================
+
+
+Kubernetes API public endpoint
+80.225.215.162:6443
+
+Identity & Security -> Domain
+OCID
+	ocid1.group.oc1..aaaaaaaak2jjmjbt2binrjlldsi5s6gszglukaajabtw5x23nae4gosbkqgq
+
+Identity & Security -> Domain -> User
+OCID
+	ocid1.user.oc1..aaaaaaaadpxhipv5j3ouudh7mnaeba2pz2p62kg2zhty7rct54pwvrqteqla
+
+
+Identity & Security -> Domain -> User -> Generate token
+Auth Token
+	(lZf531CZ<mue7[G+Dj>
+
+Governance & Administration -> Tenancy Details
+ocid:	ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq
+name:	razaussamad88
+
+
+
+
+
+
+========================================================================================================================
+
+To install Oracle Command Infrastructure (OCI) CLI, run this bash command
+	bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+	[above cmd is only for python 3.6 or lower]
+
+
+	bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- --accept-all-defaults
+curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -o install.sh
+bash install.sh --accept-all-defaults
+	
+
+========================================================================================================================
+
+also, 
+To install Oracle Command Infrastructure (OCI) CLI, run this bash command
+	pip install oci-cli
+
+	oci --version
+	which oci
+
+========================================================================================================================
+	
+Main install folder:
+	"C:\Users\Raza us Samad\lib\oracle-cli"
+
+Executable folder:
+	"C:\Users\Raza us Samad\bin"
+
+Scripts folder:
+	"C:\Users\Raza us Samad\bin\oci-cli-scripts"
+
+
+PATH Environment Entries
+	C:\Users\Raza us Samad\bin
+	C:\Users\Raza us Samad\lib\oracle-cli\bin	
+	
+========================================================================================================================
+
+
+
+
+oci artifacts repository list --region <your_region>
+
+oci artifacts repository list --region ap-mumbai-1
+oci artifacts repository list --compartment-id ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq --region ap-mumbai-1
+
+oci artifacts container image list --compartment-id ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq
+oci artifacts container image delete --image-id ocid1.containerimage.oc1.ap-mumbai-1.0.bms04rxljz1v.aaaaaaaa3ki5ycbcjlnyjr73bhgfeohs6mtwfembqwcb534edfa5ixfjd2aq
+oci artifacts container image delete --image-id ocid1.containerimage.oc1.ap-mumbai-1.0.bms04rxljz1v.aaaaaaaahhf7u4t54sxurhuihyjfvwrap7kvcpra4he263iayt7pujaeh5rq
+oci artifacts container image delete --image-id ocid1.containerimage.oc1.ap-mumbai-1.0.bms04rxljz1v.aaaaaaaab3vmjxkv5qdqkcyss6uebda2k7qzjhnxwxc3r5ievlztylqs6lna
+oci artifacts container image delete --image-id ocid1.containerimage.oc1.ap-mumbai-1.0.bms04rxljz1v.aaaaaaaaigr47n2tksymtsk5eumjm5kj2apra4j3lcfnmpnl2aqdsgu7pcqq
+
+
+oci dns view list --compartment-id ocid1.tenancy.oc1..aaaaaaaarpxdx6yu7ozyefz6kdqptd74v2mkm4wgybmdnda7s766rbiyshfq --region ap-mumbai-1
+
+
+
+    docker manifest inspect <your_registry>/<image_name>:<tag>
+	   
+	docker manifest inspect ap-mumbai-1.ocir.io/bms04rxljz1v/webapp:latest
+	docker manifest inspect nginx
